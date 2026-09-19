@@ -22,8 +22,8 @@ const archivo = Archivo({
 });
 
 export const metadata: Metadata = {
-  title: `${profile.name} — Designer & Developer`,
-  description: `Portfolio of ${profile.name}, a designer and full-stack developer with a ${profile.degree} from ${profile.school}.`,
+  title: `BUBBARD`,
+  description: `BUBBARD is a software and full brand development studio based in Chicago, IL. We build websites, apps, and brands for clients who want to make a mark.`,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
