@@ -1,0 +1,298 @@
+@import "tailwindcss";
+
+:root {
+  /* Graphite: the page is dark, ink is pale grey, vermilion is the accent. */
+  --paper: #1b1c1a;
+  --paper-deep: #252623;
+  --ink: #d6d7d2;
+  --muted: #8a8b84;
+  --line: #363733;
+  --vermilion: #f0503e;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-vermilion: var(--vermilion);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-archivo);
+}
+
+html {
+  color-scheme: dark;
+}
+
+/* Base-layer defaults so Tailwind weight utilities can still override them. */
+@layer base {
+  .font-display {
+    font-weight: 600;
+  }
+
+  em {
+    font-style: normal;
+  }
+}
+
+/* Light band inside the dark site: re-maps the colour tokens, so everything
+   inside (text, borders, plates) flips to a pale page without extra classes. */
+.theme-light {
+  --paper: #dfe0da;
+  --paper-deep: #d0d1ca;
+  --ink: #111210;
+  --muted: #6b6c66;
+  --line: #bfc0b9;
+  --vermilion: #d93a28;
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+/* The case-study modal always stays graphite, even when opened from a light
+   section. */
+dialog.modal {
+  --paper: #1b1c1a;
+  --paper-deep: #252623;
+  --ink: #d6d7d2;
+  --muted: #8a8b84;
+  --line: #363733;
+  --vermilion: #f0503e;
+}
+
+/* Fine film grain over the whole page. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--vermilion);
+  color: var(--paper);
+}
+
+/* ── Hero backdrop ─────────────────────────────────────────────── */
+
+/* Graphite scene: a pale glow high up, falling to the page colour, with a
+   dot-matrix (halftone) texture over the top of it. */
+.hero-scene {
+  background:
+    radial-gradient(
+      ellipse 70% 45% at 50% 34%,
+      rgb(150 152 143 / 0.42),
+      transparent 70%
+    ),
+    linear-gradient(to bottom, #454641 0%, #2c2d2a 42%, var(--paper) 100%);
+}
+
+/* Soft blurred orbs that drift over the scene (transform-only, so it stays on
+   the compositor). HeroBackdrop sets each orb's place, tone and path through
+   custom properties; they sit under the halftone and the wordmark. */
+.hero-glow {
+  border-radius: 50%;
+  filter: blur(var(--blur, 60px));
+  will-change: transform;
+  background: radial-gradient(
+    closest-side,
+    rgb(160 162 152 / var(--tone, 0.2)),
+    transparent
+  );
+  animation: orb-drift var(--dur, 18s) ease-in-out var(--delay, 0s) infinite
+    alternate;
+}
+
+@keyframes orb-drift {
+  from {
+    transform: translate3d(var(--x0), var(--y0), 0) scale(var(--s0));
+  }
+  to {
+    transform: translate3d(var(--x1), var(--y1), 0) scale(var(--s1));
+  }
+}
+
+.hero-halftone {
+  background-image: radial-gradient(rgb(0 0 0 / 0.5) 0.9px, transparent 1.3px);
+  background-size: 4px 4px;
+  opacity: 0.55;
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    rgb(0 0 0 / 0.55) 55%,
+    transparent 90%
+  );
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.stamp-ring {
+  animation: spin-slow 20s linear infinite;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.pulse-dot {
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+/* ── Scroll reveal ─────────────────────────────────────────────────
+   Elements opt in with data-reveal ("up" by default, "fade", "clip",
+   "words"); RevealObserver adds data-in once they enter the viewport.
+   Gated on scripting so no-JS visitors still see everything. */
+
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.12em 0.05em;
+  margin: -0.12em -0.05em;
+}
+
+.word-in {
+  display: inline-block;
+}
+
+@media (scripting: enabled) {
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 1s var(--ease),
+      transform 1s var(--ease);
+    transition-delay: calc(var(--d, 0) * 90ms);
+  }
+
+  [data-reveal="fade"] {
+    transform: none;
+  }
+
+  /* The wrapper stays visible so the observer can see it; its child is
+     what gets wiped in (a fully clipped target never counts as intersecting). */
+  [data-reveal="clip"] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  [data-reveal="clip"] > * {
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 1.2s var(--ease);
+    transition-delay: calc(var(--d, 0) * 90ms);
+  }
+
+  [data-reveal="words"] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  [data-reveal="words"] .word-in {
+    transform: translateY(110%);
+    transition: transform 1s var(--ease);
+    transition-delay: calc(var(--d, 0) * 90ms + var(--i, 0) * 70ms);
+  }
+
+  [data-reveal][data-in="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  [data-reveal="clip"][data-in="true"] > * {
+    clip-path: inset(0 0 0 0);
+  }
+
+  [data-reveal="words"][data-in="true"] .word-in {
+    transform: none;
+  }
+}
+
+/* ── Hero role ticker ──────────────────────────────────────────────
+   Without JS the roles just sit in a row; with JS the window stays
+   collapsed until RoleTicker has measured it, then slides open. */
+
+.rt-dup {
+  display: none;
+}
+
+@media (scripting: enabled) {
+  .rt-dup {
+    display: flex;
+  }
+
+  .rt-window:not([data-ready]) {
+    width: 0;
+    visibility: hidden;
+  }
+}
+
+/* ── About: scroll-filled statement ────────────────────────────── */
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .sw {
+    opacity: 0.18;
+    transition: opacity 0.25s linear;
+  }
+}
+
+/* ── Case-study modal: lock page scroll and fade the sheet in ──── */
+
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+dialog.modal[open] {
+  animation: rise 0.5s var(--ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot,
+  .stamp-ring,
+  .hero-glow,
+  dialog.modal[open] {
+    animation: none;
+  }
+
+  [data-reveal],
+  [data-reveal] > *,
+  [data-reveal] .word-in {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+}
