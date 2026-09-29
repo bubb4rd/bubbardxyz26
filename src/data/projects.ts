@@ -57,7 +57,7 @@ export const projects: Project[] = [
     description:
       "Built from the ground up in Swift and SwiftUI — a perks directory connecting chamber members with 50 local partner businesses.",
     tags: ["Swift", "SwiftUI", "REST APIs", "iOS"],
-    href: "https://github.com/bubb4rd/WKCC-Perks",
+    href: "https://apps.apple.com/us/app/wkcc-perks/id6795765162",
     category: "dev",
     accent: "#3B82F6",
     featured: true,
