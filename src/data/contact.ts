@@ -5,6 +5,6 @@ export const contact = {
   links: [
     { label: "GitHub", href: "https://github.com/bubb4rd" },
     { label: "Behance", href: "https://be.net/bubbard/" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/in/bo-hubbard-4988b2246/" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/bohubbard/" },
   ],
 };
