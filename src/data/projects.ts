@@ -104,7 +104,7 @@ export const projects: Project[] = [
     accent: "#06B6D4",
     kind: "Web Development",
     image:
-      "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=1200&q=80&auto=format&fit=crop",
+      "/images/BORGWITHUS.png",
   },
   {
     id: "bubbard",
