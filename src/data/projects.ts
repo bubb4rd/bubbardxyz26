@@ -38,7 +38,6 @@ export const projects: Project[] = [
     href: "https://elovatesr.com",
     category: "dev",
     accent: "#EAB308",
-    featured: true,
     kind: "Web Development",
     stat: {
       value: "OCR",
@@ -161,7 +160,6 @@ export const projects: Project[] = [
     href: "https://be.net/bubbard/",
     category: "design",
     accent: "#F472B6",
-    featured: true,
     kind: "Design",
     stat: { value: "100+", label: "Users engaged per post" },
     image: "/images/bubbard-design-project.png",
