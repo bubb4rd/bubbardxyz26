@@ -87,7 +87,8 @@ body {
 /* ── Hero backdrop ─────────────────────────────────────────────── */
 
 /* Graphite scene: a pale glow high up, falling to the page colour, with a
-   dot-matrix (halftone) texture over the top of it. */
+   dot-matrix (halftone) texture over the top of it. This is the still
+   fallback; HeroShader draws the animated version over it. */
 .hero-scene {
   background:
     radial-gradient(
@@ -98,29 +99,14 @@ body {
     linear-gradient(to bottom, #454641 0%, #2c2d2a 42%, var(--paper) 100%);
 }
 
-/* Soft blurred orbs that drift over the scene (transform-only, so it stays on
-   the compositor). HeroBackdrop sets each orb's place, tone and path through
-   custom properties; they sit under the halftone and the wordmark. */
-.hero-glow {
-  border-radius: 50%;
-  filter: blur(var(--blur, 60px));
-  will-change: transform;
-  background: radial-gradient(
-    closest-side,
-    rgb(160 162 152 / var(--tone, 0.2)),
-    transparent
-  );
-  animation: orb-drift var(--dur, 18s) ease-in-out var(--delay, 0s) infinite
-    alternate;
+/* Fades in once HeroShader has drawn its first frame. */
+.hero-shader {
+  opacity: 0;
+  transition: opacity 0.9s var(--ease);
 }
 
-@keyframes orb-drift {
-  from {
-    transform: translate3d(var(--x0), var(--y0), 0) scale(var(--s0));
-  }
-  to {
-    transform: translate3d(var(--x1), var(--y1), 0) scale(var(--s1));
-  }
+.hero-shader[data-ready] {
+  opacity: 1;
 }
 
 .hero-halftone {
@@ -282,7 +268,6 @@ dialog.modal[open] {
 @media (prefers-reduced-motion: reduce) {
   .pulse-dot,
   .stamp-ring,
-  .hero-glow,
   dialog.modal[open] {
     animation: none;
   }
