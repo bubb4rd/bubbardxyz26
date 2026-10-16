@@ -4,12 +4,15 @@ export type Project = {
   subtitle: string;
   description: string;
   tags: string[];
-  href: string;
+  /** Public link; omitted for unreleased work, which the modal marks as coming soon. */
+  href?: string;
   category: "dev" | "design";
   accent: string;
   featured?: boolean;
+  /** Still in development; badged "Upcoming" on its card and in the case study. */
+  upcoming?: boolean;
   /** Service-style label the work filter groups by. */
-  kind?: "Web Development" | "iOS Development" | "Design";
+  kind?: "Web Development" | "iOS Development" | "Software Development" | "Design";
   /** Headline number or keyword shown as a pill on featured stories. */
   stat?: { value: string; label: string };
   /** CSS object-position for the cover when it gets cropped (default: top centre). */
@@ -72,6 +75,48 @@ export const projects: Project[] = [
       "Built from the ground up in Swift and SwiftUI",
       "Perks directory for chamber members",
       "200+ local partner businesses",
+    ],
+  },
+  {
+    id: "vaultair",
+    title: "Vaultair",
+    subtitle: "Password manager",
+    description:
+      "Encrypted, local-first desktop vault for gaming and online accounts, with passwords, MFA codes and an identity relationship map. Live on Windows, with Mac support coming soon.",
+    tags: ["Rust", "TypeScript", "Tauri", "SQLCipher", "Argon2id", "GitHub Actions"],
+    href: "https://github.com/bubb4rd/vaultair",
+    category: "dev",
+    accent: "#1E293B",
+    kind: "Software Development",
+    image: "/images/vaultair-long.jpg",
+    preview: "/images/vaultair-square-cover.jpg",
+    highlights: [
+      "Encrypted storage with SQLCipher, Argon2id and integrity-checked backups",
+      "Passwords, TOTP and recovery codes in one searchable vault",
+      "Relationship map connecting identities, emails and accounts",
+      "Windows Hello unlock, auto-lock and clipboard protection",
+      "Rust and frontend test suites with CI on GitHub Actions",
+    ],
+  },
+  {
+    id: "gliide",
+    title: "Gliide",
+    subtitle: "Job search app",
+    description:
+      "In-house job tracking, resume tailoring and application powerhouse for Mac. Built for students, early-career developers and anyone finding their career.",
+    tags: ["Rust", "Tauri", "Svelte", "TypeScript", "SQLite", "Typst"],
+    category: "dev",
+    accent: "#0E7490",
+    upcoming: true,
+    kind: "Software Development",
+    image: "/images/gliide-app-long.jpg",
+    preview: "/images/gliide-app-square-cover.jpg",
+    highlights: [
+      "Fit scoring against any job posting",
+      "Honest resume edits you accept with a click",
+      "One-page, ATS-readable PDF export",
+      "Application tracker with a daily job feed",
+      "Mac first, with Windows and iOS planned",
     ],
   },
   {

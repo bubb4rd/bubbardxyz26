@@ -109,9 +109,18 @@ function Card({
             sizes="(min-width: 1024px) 26vw, (min-width: 640px) 45vw, 100vw"
             className="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
           />
-          {project.featured && (
-            <span className="absolute left-3 top-3 rounded-[2px] bg-paper/90 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.08em]">
-              Featured
+          {(project.featured || project.upcoming) && (
+            <span className="absolute left-3 top-3 flex gap-1.5">
+              {project.featured && (
+                <span className="rounded-[2px] bg-paper/90 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.08em]">
+                  Featured
+                </span>
+              )}
+              {project.upcoming && (
+                <span className="rounded-[2px] bg-ink/90 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-paper">
+                  Upcoming
+                </span>
+              )}
             </span>
           )}
         </div>
@@ -143,9 +152,19 @@ export default function WorkExplorer({ items }: { items: GalleryItem[] }) {
   const [filter, setFilter] = useState(ALL);
   const [active, setActive] = useState<number | null>(null);
 
-  const entries = useMemo<Entry[]>(
-    () => items.map((item, index) => ({ item, index })),
+  // Featured work leads, then upcoming work, then everything else in data
+  // order. Grid and modal share this order so Previous/Next follow the screen.
+  const ordered = useMemo(
+    () => [
+      ...items.filter((i) => i.project.featured),
+      ...items.filter((i) => !i.project.featured && i.project.upcoming),
+      ...items.filter((i) => !i.project.featured && !i.project.upcoming),
+    ],
     [items],
+  );
+  const entries = useMemo<Entry[]>(
+    () => ordered.map((item, index) => ({ item, index })),
+    [ordered],
   );
   const kinds = useMemo(
     () => [
@@ -203,7 +222,7 @@ export default function WorkExplorer({ items }: { items: GalleryItem[] }) {
         </ul>
       </div>
 
-      <ProjectModal items={items} active={active} onChange={setActive} />
+      <ProjectModal items={ordered} active={active} onChange={setActive} />
     </>
   );
 }

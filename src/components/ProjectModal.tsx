@@ -61,6 +61,9 @@ export default function ProjectModal({ items, active, onChange }: Props) {
             <header className="pt-12 md:pt-16">
               <p className={`${monoLabel} text-muted`}>
                 {item.project.category === "design" ? "Design" : "Engineering"}
+                {item.project.upcoming && (
+                  <span className="text-vermilion"> · Upcoming</span>
+                )}
               </p>
               <h2
                 id="project-title"
@@ -104,17 +107,21 @@ export default function ProjectModal({ items, active, onChange }: Props) {
                   <div className="grid grid-cols-[5rem_1fr] gap-4 py-3">
                     <dt className="text-muted">Link</dt>
                     <dd>
-                      <a
-                        href={item.project.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-vermilion underline-offset-4 hover:underline"
-                      >
-                        {item.project.href.includes("github.com")
-                          ? "View source"
-                          : "Visit project"}{" "}
-                        ↗
-                      </a>
+                      {item.project.href ? (
+                        <a
+                          href={item.project.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-vermilion underline-offset-4 hover:underline"
+                        >
+                          {item.project.href.includes("github.com")
+                            ? "View source"
+                            : "Visit project"}{" "}
+                          ↗
+                        </a>
+                      ) : (
+                        "Coming soon"
+                      )}
                     </dd>
                   </div>
                 </dl>
